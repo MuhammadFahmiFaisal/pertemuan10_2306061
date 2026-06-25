@@ -10,17 +10,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
 
   Future<void> login() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool("isLogin", true);
     await prefs.setString("username", usernameController.text);
+    await prefs.setString("password", passwordController.text);
 
     Navigator.pushReplacement(
       context,
@@ -31,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[50],
+      backgroundColor: Colors.grey[100],
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -47,28 +46,45 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.person, size: 80, color: Colors.blue[800]),
+                    const Icon(Icons.person, size: 80, color: Colors.green),
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: usernameController,
+                      decoration: InputDecoration(
+                        labelText: "Username",
+                        prefixIcon: const Icon(Icons.person),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Username tidak boleh kosong';
                         }
                         return null;
                       },
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: _obscurePassword,
                       decoration: InputDecoration(
-                        labelText: "Username",
-                        prefixIcon: Icon(Icons.person, color: Colors.blue[800]),
+                        labelText: "Password",
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10)
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextFormField(
-                      controller: passwordController,
-                      obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Password tidak boleh kosong';
@@ -78,31 +94,28 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null;
                       },
-                      decoration: InputDecoration(
-                        labelText: "Password",
-                        prefixIcon: Icon(Icons.lock, color: Colors.blue[800]),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)
-                        ),
-                      ),
                     ),
                     const SizedBox(height: 20),
                     SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[800],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            login();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                          ),
                         ),
+                        child: const Text("Login", style: TextStyle(fontSize: 16, color: Colors.white)),
                       ),
-                      child: const Text("Login", style: TextStyle(fontSize: 16, color: Colors.white)), 
-                    ),
-                  )
-                ],
-              ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
