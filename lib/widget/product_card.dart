@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
+import 'dart:convert';
 
 class ProductCard extends StatelessWidget {
   final ProductModel product;
@@ -31,6 +32,14 @@ class ProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 5),
+            product.image.isNotEmpty
+                ? Image.memory(
+                    base64Decode(product.image),
+                    height: 120,
+                    width: 120,
+                    fit: BoxFit.cover,
+                  )
+                : const Icon(Icons.image, size: 120, color: Colors.grey),
             Text("Rp ${product.price}"),
             const SizedBox(height: 5),
             Text(product.description),

@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.person, size: 80, color: Colors.green),
+                    const Icon(Icons.person, size: 80, color: Colors.blue),
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: usernameController,

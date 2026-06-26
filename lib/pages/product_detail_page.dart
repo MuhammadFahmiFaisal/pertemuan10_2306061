@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
+import 'dart:convert';
 
 class ProductDetailPage extends StatelessWidget {
   final ProductModel product;
@@ -20,6 +21,14 @@ class ProductDetailPage extends StatelessWidget {
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
+            product.image.isNotEmpty
+                ? Image.memory(
+                    base64Decode(product.image),
+                    height: 300,
+                    width: 300,
+                    fit: BoxFit.cover,
+                  )
+                : const Icon(Icons.image, size: 120, color: Colors.grey),
             Text('Rp ${product.price}'),
             const SizedBox(height: 10),
             Text(product.description),
